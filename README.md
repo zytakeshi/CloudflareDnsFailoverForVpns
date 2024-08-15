@@ -122,7 +122,7 @@ You can view these logs in real-time using the `tail` command:
 ```bash
 tail -f /var/log/dnsmonitor.out.log /var/log/dnsmonitor.err.log
 ```
-or
+Or check the status by entering
 ```bash
 sudo supervisorctl status dnsmonitor
 ```
