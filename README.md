@@ -122,6 +122,10 @@ You can view these logs in real-time using the `tail` command:
 ```bash
 tail -f /var/log/dnsmonitor.out.log /var/log/dnsmonitor.err.log
 ```
+or
+```bash
+sudo supervisorctl status dnsmonitor
+```
 
 ## Uninstallation
 
