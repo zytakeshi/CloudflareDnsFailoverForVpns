@@ -214,3 +214,5 @@ This project is licensed under the GNU 3.0 License.
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or features you'd like to add.
 ```
+
+This updated README and installer script include the new feature for setting a failure threshold before DNS records are updated, and the README also provides clear instructions for setting up an Nginx reverse proxy for the Telegram API if you are using a server in China.
