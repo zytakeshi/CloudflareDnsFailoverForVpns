@@ -51,12 +51,11 @@ while true; do
     fi
 done
 
-# Prompt the user for health check port
+# Prompt the user for health check port, timeout, interval, and fail threshold
 HEALTH_CHECK_PORT=$(prompt_for_input "Enter the port to be monitored" "14006")
-
-# Prompt the user for health check timeout and interval
 HEALTH_CHECK_TIMEOUT=$(prompt_for_input "Enter the health check timeout in seconds" "5")
 HEALTH_CHECK_INTERVAL=$(prompt_for_input "Enter the health check interval in seconds" "60")
+HEALTH_CHECK_FAIL_THRESHOLD=$(prompt_for_input "Enter the number of consecutive fails before updating DNS" "3")
 
 # Create the configuration file
 CONFIG_FILE="config.json"
@@ -68,6 +67,7 @@ cat <<EOL > $CONFIG_FILE
         "email": "$CLOUDFLARE_EMAIL"
     },
     "telegram": {
+        "enabled": true,
         "bot_token": "$TELEGRAM_BOT_TOKEN",
         "chat_id": "$TELEGRAM_CHAT_ID"
     },
@@ -99,7 +99,8 @@ cat <<EOL >> $CONFIG_FILE
     "health_check": {
         "port": $HEALTH_CHECK_PORT,
         "timeout": $HEALTH_CHECK_TIMEOUT,
-        "interval": $HEALTH_CHECK_INTERVAL
+        "interval": $HEALTH_CHECK_INTERVAL,
+        "fail_threshold": $HEALTH_CHECK_FAIL_THRESHOLD
     }
 }
 EOL
