@@ -4,6 +4,21 @@ CONFIG_FILE="config.json"
 PYTHON_SCRIPT="monitor_dns.py"
 LANGUAGE="en"
 
+function prompt_non_empty {
+    local prompt_message="$1"
+    local input_var
+
+    while true; do
+        read -p "$prompt_message" input_var
+        if [ -z "$input_var" ]; then
+            echo "This field cannot be empty. Please enter a valid value."
+        else
+            echo "$input_var"
+            break
+        fi
+    done
+}
+
 function create_config {
     if [ "$LANGUAGE" == "zh" ]; then
         echo "正在创建新的 config.json..."
@@ -13,68 +28,15 @@ function create_config {
     
     echo "{}" > $CONFIG_FILE
 
-    if [ "$LANGUAGE" == "zh" ]; then
-        echo "请输入您的 Cloudflare API 密钥:"
-    else
-        echo "Enter your Cloudflare API key:"
-    fi
-    read cloudflare_api_key
-
-    if [ "$LANGUAGE" == "zh" ]; then
-        echo "请输入您的 Cloudflare 电子邮件:"
-    else
-        echo "Enter your Cloudflare email:"
-    fi
-    read cloudflare_email
-
-    if [ "$LANGUAGE" == "zh" ]; then
-        echo "请输入您的 Telegram bot token (可选):"
-    else
-        echo "Enter your Telegram bot token (optional):"
-    fi
-    read telegram_bot_token
-
-    if [ "$LANGUAGE" == "zh" ]; then
-        echo "请输入您的 Telegram chat ID (可选):"
-    else
-        echo "Enter your Telegram chat ID (optional):"
-    fi
-    read telegram_chat_id
-
-    if [ "$LANGUAGE" == "zh" ]; then
-        echo "请输入您的自定义 Telegram API URL (可选):"
-    else
-        echo "Enter your custom Telegram API URL (optional):"
-    fi
-    read telegram_api_url
-
-    if [ "$LANGUAGE" == "zh" ]; then
-        echo "请输入要监控的端口:"
-    else
-        echo "Enter the port to be monitored:"
-    fi
-    read health_check_port
-
-    if [ "$LANGUAGE" == "zh" ]; then
-        echo "请输入健康检查的超时时间（秒）:"
-    else
-        echo "Enter the timeout for health checks (in seconds):"
-    fi
-    read health_check_timeout
-
-    if [ "$LANGUAGE" == "zh" ];then
-        echo "请输入健康检查的间隔时间（秒）:"
-    else
-        echo "Enter the interval between health checks (in seconds):"
-    fi
-    read health_check_interval
-
-    if [ "$LANGUAGE" == "zh" ]; then
-        echo "请输入失败阈值（失败几次后更新 DNS）:"
-    else
-        echo "Enter the fail threshold (number of failed checks before updating DNS):"
-    fi
-    read fail_threshold
+    cloudflare_api_key=$(prompt_non_empty "请输入您的 Cloudflare API 密钥:")
+    cloudflare_email=$(prompt_non_empty "请输入您的 Cloudflare 电子邮件:")
+    telegram_bot_token=$(prompt_non_empty "请输入您的 Telegram bot token (可选):")
+    telegram_chat_id=$(prompt_non_empty "请输入您的 Telegram chat ID (可选):")
+    telegram_api_url=$(prompt_non_empty "请输入您的自定义 Telegram API URL (可选):")
+    health_check_port=$(prompt_non_empty "请输入要监控的端口:")
+    health_check_timeout=$(prompt_non_empty "请输入健康检查的超时时间（秒）:")
+    health_check_interval=$(prompt_non_empty "请输入健康检查的间隔时间（秒）:")
+    fail_threshold=$(prompt_non_empty "请输入失败阈值（失败几次后更新 DNS）:")
 
     jq ". + {
         \"cloudflare\": {
