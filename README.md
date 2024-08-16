@@ -205,7 +205,7 @@ To stop and remove the DNS monitor service, follow these steps:
    ```bash
    rm -rf /path/to/dns-monitor
    ```
-
+   
 ## License
 
 This project is licensed under the GNU 3.0 License.
@@ -213,4 +213,3 @@ This project is licensed under the GNU 3.0 License.
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or features you'd like to add.
-```
