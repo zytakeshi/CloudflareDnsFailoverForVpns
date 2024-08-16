@@ -24,7 +24,7 @@ This repository provides a DNS monitoring service that checks the health of mult
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/your-repository/dns-monitor.git
+   git clone https://github.com/zytakeshi/CloudflareDnsFailoverForVpns.git
    cd dns-monitor
    ```
 
