@@ -24,7 +24,7 @@ This repository provides a DNS monitoring service that checks the health of mult
 1. **Clone the Repository**:
 
    ```bash
-bash <(curl -L -s https://raw.githubusercontent.com/zytakeshi/CloudflareDnsFailoverForVpns/main/setup_dns_monitor.sh)
+   bash <(curl -L -s https://raw.githubusercontent.com/zytakeshi/CloudflareDnsFailoverForVpns/main/setup_dns_monitor.sh)
    ```
 
 2. **Run the Installer Script**:
