@@ -21,22 +21,13 @@ This repository provides a DNS monitoring service that checks the health of mult
 
 ## Installation
 
-1. **Clone the Repository**:
+1. **Run the Installer Script**:
 
    ```bash
    bash <(curl -L -s https://raw.githubusercontent.com/zytakeshi/CloudflareDnsFailoverForVpns/main/setup_dns_monitor.sh)
    ```
 
-2. **Run the Installer Script**:
-
-   Make the script executable and run it:
-
-   ```bash
-   chmod +x setup_dns_monitor.sh
-   sudo ./setup_dns_monitor.sh
-   ```
-
-3. **Follow the Prompts**:
+2. **Follow the Prompts**:
 
    The installer will prompt you to enter:
    - Cloudflare API key
