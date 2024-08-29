@@ -208,9 +208,41 @@ logger.addHandler(console_handler)
 def load_config():
     try:
         with open('config.json', 'r') as config_file:
-            return json.load(config_file)
+            config = json.load(config_file)
+
+        # Validate Cloudflare config
+        if 'cloudflare' not in config:
+            logger.error("Missing 'cloudflare' configuration.")
+            sys.exit(1)
+        if 'api_key' not in config['cloudflare'] or 'email' not in config['cloudflare']:
+            logger.error("Missing 'api_key' or 'email' in 'cloudflare' configuration.")
+            sys.exit(1)
+
+        # Validate Telegram config
+        if 'telegram' not in config:
+            logger.error("Missing 'telegram' configuration.")
+            sys.exit(1)
+        if 'bot_token' not in config['telegram'] or 'chat_id' not in config['telegram']:
+            logger.error("Missing 'bot_token' or 'chat_id' in 'telegram' configuration.")
+            sys.exit(1)
+
+        # Validate records config
+        if 'records' not in config or not config['records']:
+            logger.error("No DNS records found in configuration.")
+            sys.exit(1)
+
+        # Validate health check config
+        if 'health_check' not in config:
+            logger.warning("Missing 'health_check' configuration, using defaults.")
+            config['health_check'] = {}
+        config['health_check'].setdefault('port', 80)
+        config['health_check'].setdefault('timeout', 5)
+        config['health_check'].setdefault('interval', 60)
+        config['health_check'].setdefault('fail_threshold', 3)
+
+        return config
     except Exception as e:
-        logger.error(f"Failed to load configuration: {e}")
+        logger.error("Failed to load configuration: {}".format(e))
         sys.exit(1)
 
 # Get Zone ID dynamically using the Cloudflare API
@@ -293,17 +325,22 @@ def update_dns_record(zone_id, record, ip_address, auth):
 
 # Send a Telegram notification
 def send_telegram_notification(bot_token, chat_id, message, telegram_api_url=None):
-    if telegram_api_url is None:
+    if telegram_api_url is None or not telegram_api_url:
         telegram_api_url = "https://api.telegram.org"
     
-    url = f"{telegram_api_url}/bot{bot_token}/sendMessage"
+    # Log the URL being used
+    logger.info("Using Telegram API URL: {}".format(telegram_api_url))
+
+    url = "{}/bot{bot_token}/sendMessage".format(telegram_api_url.rstrip('/'), bot_token=bot_token)
+    logger.info("Constructed URL: {}".format(url))
+
     params = {
         "chat_id": chat_id,
         "text": message
     }
     
     try:
-        response = requests.get(url, params=params, timeout=10)
+        response = requests.get(url, params=params, timeout=30)
         response.raise_for_status()
         logger.info(f"Telegram notification sent successfully. Response: {response.text}")
     except requests.RequestException as e:
@@ -314,6 +351,9 @@ def main():
     config = load_config()
     auth = config['cloudflare']
     telegram_api_url = config['telegram'].get('api_url')
+
+    # Log the loaded API URL
+    logger.info(f"Using Telegram API URL: {telegram_api_url}")
 
     # Set up a counter to track consecutive health check failures
     fail_count = {record['name']: 0 for record in config['records']}
@@ -338,7 +378,7 @@ def main():
                 # Determine the authentication method
                 if 'api_token' in auth:
                     headers['Authorization'] = f'Bearer {auth["api_token"]}'
-                elif 'api_key' in auth and 'email' in auth:
+                elif 'api_key' in auth and 'email' in auth':
                     headers['X-Auth-Email'] = auth['email']
                     headers['X-Auth-Key'] = auth['api_key']
                 
